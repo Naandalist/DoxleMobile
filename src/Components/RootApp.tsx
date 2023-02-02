@@ -1,6 +1,5 @@
 import {StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
 import {SocketProvider} from './Provider/Sockets/socketContext';
 import {OrientationProvider} from './Provider/Orientation/OrientationContext';
 import {HomeScreenContainer, RootAppContainer} from './StyledComponentsRootApp';
@@ -9,10 +8,17 @@ import {BlurView} from '@react-native-community/blur';
 import LoadingScreen from '../Utilities/LottiesAnimation/LoadingScreen';
 import Drawer from './Drawer/Drawer';
 import NoticeBoard from './Contents/NoticeBoard/NoticeBoard';
-// import Login from './Login/Login';
-import Login from './Login/LoginNew';
 import {Company} from '../Models/company';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+import ForgotPassword from './ForgotPassword';
+import Login from './Login/Login';
+import Notice from './Notice';
+
+const Stack = createNativeStackNavigator();
 
 type Props = {};
 export type TView = 'notice' | 'costings' | 'dockets' | 'calculator';
@@ -37,101 +43,73 @@ const RootApp = (props: Props) => {
   const [currentView, setcurrentView] = useState<TView>('notice');
   const [showDrawer, setshowDrawer] = useState<boolean>(false);
   const [isTappedOutside, setIsTappedOutside] = useState<boolean>(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   //####################################################
 
   const {loggedIn, isCheckingLogInStatus, user} =
     useAuth() as authContextInterface;
+
   useEffect(() => {
     AsyncStorage.setItem('currentCompany', JSON.stringify(company));
   }, []);
+
+  // console.log('loggedIn: ', loggedIn);
+  // console.log('user: ', user);
+
+  if (isCheckingLogInStatus === true && !user) {
+    return (
+      <BlurView
+        blurType="dark"
+        blurAmount={4}
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+        }}
+        reducedTransparencyFallbackColor="white">
+        <LoadingScreen />
+      </BlurView>
+    );
+  }
 
   return (
     <NavigationContainer>
       <SocketProvider>
         <OrientationProvider>
-          <RootAppContainer>
-            {isCheckingLogInStatus === true && !user && (
-              <BlurView
-                blurType="dark"
-                blurAmount={4}
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  top: 0,
-                  left: 0,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  zIndex: 1000,
-                }}
-                reducedTransparencyFallbackColor="white">
-                <LoadingScreen />
-              </BlurView>
-            )}
-
-            {loggedIn && user && (
-              <Drawer
-                show={showDrawer}
-                setShow={setshowDrawer}
-                currentView={currentView}
-                setcurrentView={setcurrentView}
-                isTappedOutside={isTappedOutside}
-                setIsTappedOutside={setIsTappedOutside}
+          <Stack.Navigator>
+            {!isLoggedIn ? (
+              <>
+                <Stack.Screen
+                  name="Login"
+                  component={Login}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+                  options={{headerShown: true}}
+                />
+              </>
+            ) : (
+              <Stack.Screen
+                name="Notice"
+                component={Notice}
+                options={{headerShown: false}}
               />
             )}
-            {loggedIn === true && user ? (
-              <HomeScreenContainer style={{zIndex: showDrawer ? 0 : 1}}>
-                {/* {showDrawer && (
-                  <TouchableWithoutFeedback
-                    onPressIn={() => setIsTappedOutside(true)}>
-                    <BlurView
-                      style={styles.blurContainer}
-                      blurType="dark"
-                      blurAmount={4}
-                      blurRadius={4}></BlurView>
-                  </TouchableWithoutFeedback>
-                )} */}
+          </Stack.Navigator>
 
-                <NoticeBoard company={company} setshowDrawer={setshowDrawer} />
-
-                {/* {currentView === 'notice' ? (
-                      <NoticeStack.Navigator
-                        screenOptions={{
-                          headerShown: false,
-                          animationTypeForReplace: 'push',
-                        }}
-                        initialRouteName="Notice">
-                        <NoticeStack.Screen name="Notice">
-                          {props => (
-                            <NoticeBoard
-                  company={company}
-                  setshowDrawer={setshowDrawer}
-                  showDrawer={showDrawer}
-                />
-                          )}
-                        </NoticeStack.Screen>
-                      </NoticeStack.Navigator>
-                    ) : currentView === 'costings' ? (
-                      <CostingStack.Navigator
-                        screenOptions={{headerShown: false}}>
-                        <CostingStack.Screen name="Costings">
-                          {props => <Login {...props} />}
-                        </CostingStack.Screen>
-                      </CostingStack.Navigator>
-                    ) : null} */}
-              </HomeScreenContainer>
-            ) : (
-              // <AuthStack.Navigator
-              //   screenOptions={{headerShown: false}}
-              //   initialRouteName="Login">
-              //   <AuthStack.Screen name="Login" component={Login} />
-              // </AuthStack.Navigator>
-
-              <Login />
-            )}
-          </RootAppContainer>
+          {/* <ForgotPassword /> */}
+          {/* </RootAppContainer> */}
         </OrientationProvider>
       </SocketProvider>
     </NavigationContainer>

@@ -11,6 +11,12 @@ import {StyleSheet, SafeAreaView} from 'react-native';
 import {AuthProvider} from './src/Components/Provider/AuthProvider';
 import RootApp from './src/Components/RootApp';
 import RNBootSplash from 'react-native-bootsplash';
+
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
+
 function App(): JSX.Element {
   React.useEffect(() => {
     setTimeout(() => {
@@ -19,14 +25,7 @@ function App(): JSX.Element {
   }, []);
   return (
     <AuthProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <RootApp />
-      </SafeAreaView>
+      <RootApp />
     </AuthProvider>
   );
 }

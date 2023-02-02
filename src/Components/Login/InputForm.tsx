@@ -1,7 +1,5 @@
-import {Alert, StyleSheet, View} from 'react-native';
+import {TouchableOpacity, StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
-import styled from 'styled-components/native';
-import {ContinueIcon, PasswordIcon} from './LoginIcon';
 import {authContextInterface, useAuth} from '../Provider/AuthProvider';
 import {
   ContinueText,
@@ -14,7 +12,7 @@ import {
 
 type Props = {setloading: Function; setnotificationMessage: Function};
 
-const InputForm = ({setloading, setnotificationMessage}: Props) => {
+const InputForm = ({setloading, setnotificationMessage, navigation}: Props) => {
   const {loginWithDetails} = useAuth() as authContextInterface;
   interface ILoginInput {
     email: string;
@@ -28,14 +26,6 @@ const InputForm = ({setloading, setnotificationMessage}: Props) => {
   const [currentInputScreen, setcurrentInputScreen] = useState<
     'email' | 'password'
   >('email');
-
-  const handleContinueButton = () => {
-    if (loginInput.email === '')
-      Alert.alert('Empty Email Input Field', 'Please Enter Your Email');
-    else {
-      setcurrentInputScreen('password');
-    }
-  };
 
   const handleLoginButton = async () => {
     setloading(true);
@@ -86,61 +76,62 @@ const InputForm = ({setloading, setnotificationMessage}: Props) => {
   return (
     <StyledRootInputFormContainer>
       <StyledTextInputContainer>
-        {currentInputScreen === 'email' ? (
+        <View style={styles.inputWrapper}>
           <StyledTextInput
             focusable={true}
             secureTextEntry={false}
             onChangeText={handleTextInputChange}
             value={loginInput.email}
-            placeholder="Enter your username"
-            placeholderTextColor="#89819E"
+            placeholder="Username"
+            placeholderTextColor="#C2CBE7"
           />
-        ) : (
+        </View>
+        <View style={{margin: 2}} />
+        <View style={styles.inputWrapper}>
           <StyledTextInput
             secureTextEntry={true}
             onChangeText={handleTextInputChange}
             value={loginInput.password}
-            placeholder="Enter your password"
-            placeholderTextColor="#89819E"
+            placeholder="Password"
+            placeholderTextColor="#C2CBE7"
             blurOnSubmit={false}
           />
-        )}
+        </View>
       </StyledTextInputContainer>
+
+      <View style={{margin: 30}} />
 
       {/*btn field */}
       <StyledFormButtonContainer>
-        {currentInputScreen === 'email' ? (
-          <StyledContinueButton
-            delayPressIn={0}
-            style={{
-              backgroundColor: loginInput.email !== '' ? '#5A36BE' : 'black',
-            }}
-            onPress={() => {
-              handleContinueButton();
-            }}>
-            <ContinueText style={{fontFamily: 'RobotoMono-Regular'}}>
-              Continue
-            </ContinueText>
-            <ContinueIcon />
-          </StyledContinueButton>
-        ) : (
-          <StyledContinueButton
-            delayPressIn={0}
-            style={{
-              backgroundColor: loginInput.password !== '' ? '#5A36BE' : 'black',
-            }}
-            onPress={() => {
-              handleLoginButton();
-            }}>
-            <ContinueText>Login</ContinueText>
-            <PasswordIcon />
-          </StyledContinueButton>
-        )}
+        <StyledContinueButton
+          delayPressIn={0}
+          style={styles.btn}
+          onPress={() => {
+            handleLoginButton();
+          }}>
+          <ContinueText>Login</ContinueText>
+        </StyledContinueButton>
       </StyledFormButtonContainer>
+      <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+      </TouchableOpacity>
     </StyledRootInputFormContainer>
   );
 };
 
 export default React.memo(InputForm);
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  inputWrapper: {
+    backgroundColor: '#FFF',
+    width: '100%',
+    paddingLeft: 10,
+    borderRadius: 5,
+  },
+  btn: {
+    backgroundColor: 'black',
+  },
+  forgotPassword: {
+    marginTop: 14,
+  },
+});
