@@ -3,10 +3,9 @@ import styled from 'styled-components/native';
 //################# STYLED COMPONENTS INPUTFORM.TSX ##################
 export const StyledRootInputFormContainer = styled.View`
   width: 100%;
-  height: 90%;
   display: flex;
-  flex-direction: column;
-  padding-left: 40px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const StyledTextInputContainer = styled.View`
@@ -14,7 +13,6 @@ export const StyledTextInputContainer = styled.View`
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  height: 40%;
 `;
 export const StyledTextInput = styled.TextInput`
   font-style: normal;
@@ -22,22 +20,19 @@ export const StyledTextInput = styled.TextInput`
   font-size: 16px;
   color: #000000;
   width: 100%;
-  flex: 1;
   font-family: 'RobotoMono-Regular';
 `;
 export const StyledFormButtonContainer = styled.View`
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  height: 60%;
 `;
 
 export const StyledContinueButton = styled.TouchableOpacity`
   width: 121px;
-  height: 35px;
+  height: 45px;
   background-color: black;
-  border-radius: 13px;
+  border-radius: 5px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -46,7 +41,7 @@ export const StyledContinueButton = styled.TouchableOpacity`
 export const ContinueText = styled.Text`
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 14px;
   color: #ffffff;
   padding-right: 5px;
@@ -66,7 +61,6 @@ export const StyledRootLoginScreen = styled.SafeAreaView`
 export const StyledLoginContainer = styled.View`
   width: 90%;
   height: 70%;
-  background-color: white;
   border-radius: 45px;
   display: flex;
   flex-direction: column;
@@ -75,6 +69,12 @@ export const StyledLogoContainer = styled.View`
   width: 100%;
   height: 10%;
   justify-content: center;
-  padding-left: 20px;
+  align-items: center;
 `;
 //##################################r##################
+
+export const StyledTitleContainer = styled.View`
+  margin-vertical:20px
+  justify-content: center;
+  align-items: center;
+`;

@@ -2,8 +2,8 @@ import Svg, {Path} from 'react-native-svg';
 
 export const DoxleLogo = (props: any) => (
   <Svg
-    width={21}
-    height={20}
+    width="100%"
+    height="100%"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}>

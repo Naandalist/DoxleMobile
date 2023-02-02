@@ -9,7 +9,8 @@ import {BlurView} from '@react-native-community/blur';
 import LoadingScreen from '../Utilities/LottiesAnimation/LoadingScreen';
 import Drawer from './Drawer/Drawer';
 import NoticeBoard from './Contents/NoticeBoard/NoticeBoard';
-import Login from './Login/Login';
+// import Login from './Login/Login';
+import Login from './Login/LoginNew';
 import {Company} from '../Models/company';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -53,6 +54,7 @@ const RootApp = (props: Props) => {
               <BlurView
                 blurType="dark"
                 blurAmount={4}
+                // eslint-disable-next-line react-native/no-inline-styles
                 style={{
                   position: 'absolute',
                   width: '100%',
