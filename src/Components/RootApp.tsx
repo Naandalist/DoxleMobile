@@ -8,17 +8,23 @@ import {BlurView} from '@react-native-community/blur';
 import LoadingScreen from '../Utilities/LottiesAnimation/LoadingScreen';
 import Drawer from './Drawer/Drawer';
 import NoticeBoard from './Contents/NoticeBoard/NoticeBoard';
+import Costing from './Contents/Costing';
 import {Company} from '../Models/company';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import ForgotPassword from './ForgotPassword';
 import Login from './Login/Login';
 import Notice from './Notice';
 
-const Stack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
+const NoticeStack = createNativeStackNavigator();
+const CostingStack = createNativeStackNavigator();
+
+const Tab = createBottomTabNavigator();
 
 type Props = {};
 export type TView = 'notice' | 'costings' | 'dockets' | 'calculator';
@@ -44,7 +50,7 @@ const RootApp = (props: Props) => {
   const [showDrawer, setshowDrawer] = useState<boolean>(false);
   const [isTappedOutside, setIsTappedOutside] = useState<boolean>(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   //####################################################
 
@@ -81,35 +87,55 @@ const RootApp = (props: Props) => {
     );
   }
 
+  const NoticeStackScreen = () => {
+    return (
+      <NoticeStack.Navigator>
+        <NoticeStack.Screen
+          name="NoticeBoard"
+          component={NoticeBoard}
+          options={{headerShown: false}}
+        />
+      </NoticeStack.Navigator>
+    );
+  };
+
+  const CostingStackScreen = () => {
+    return (
+      <CostingStack.Navigator>
+        <NoticeStack.Screen
+          name="Costing"
+          component={Costing}
+          options={{headerShown: false}}
+        />
+      </CostingStack.Navigator>
+    );
+  };
+
   return (
     <NavigationContainer>
       <SocketProvider>
         <OrientationProvider>
-          <Stack.Navigator>
-            {!isLoggedIn ? (
-              <>
-                <Stack.Screen
+          {isLoggedIn ? (
+            <Tab.Navigator>
+              <Tab.Screen name="Notice" component={NoticeStackScreen} />
+              <Tab.Screen name="Costing" component={CostingStackScreen} />
+            </Tab.Navigator>
+          ) : (
+            <>
+              <AuthStack.Navigator>
+                <AuthStack.Screen
                   name="Login"
                   component={Login}
                   options={{headerShown: false}}
                 />
-                <Stack.Screen
+                <AuthStack.Screen
                   name="ForgotPassword"
                   component={ForgotPassword}
                   options={{headerShown: true}}
                 />
-              </>
-            ) : (
-              <Stack.Screen
-                name="Notice"
-                component={Notice}
-                options={{headerShown: false}}
-              />
-            )}
-          </Stack.Navigator>
-
-          {/* <ForgotPassword /> */}
-          {/* </RootAppContainer> */}
+              </AuthStack.Navigator>
+            </>
+          )}
         </OrientationProvider>
       </SocketProvider>
     </NavigationContainer>
